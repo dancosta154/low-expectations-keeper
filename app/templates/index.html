@@ -583,7 +583,8 @@
       });
 
       // Keeper Deadline Countdown
-      const deadlineDate = new Date('2025-08-28T12:00:00-05:00'); // Thursday, August 28th, 2025 at noon EST
+      // Set deadline to Thursday, August 28th, 2025 at noon EST
+      const deadlineDate = new Date('2025-08-28T17:00:00Z'); // 12:00 PM EST = 5:00 PM UTC
       const deadlineDateEl = document.getElementById('deadlineDate');
       const countdownEl = document.getElementById('countdown');
       const deadlineAlertEl = document.getElementById('deadlineAlert');
