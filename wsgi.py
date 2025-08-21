@@ -10,8 +10,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Create Flask app
-app = Flask(__name__)
+# Create Flask app with correct template and static directories
+app = Flask(__name__, 
+           template_folder="app/templates",
+           static_folder="app/static")
 
 # Configure app
 app.config.update(
