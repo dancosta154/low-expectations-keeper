@@ -1,28 +1,36 @@
 import os
 import sys
 
-# Try different paths for Railway deployment
-possible_paths = [
-    os.getcwd(),  # Current working directory
-    os.path.dirname(__file__),  # Directory containing wsgi.py
-    "/app",  # Railway app directory
-]
+# Add the current directory to Python path
+sys.path.insert(0, os.getcwd())
 
-for path in possible_paths:
-    if path not in sys.path:
-        sys.path.insert(0, path)
+# Import Flask and create app directly
+from flask import Flask
+from dotenv import load_dotenv
 
-# Try to import create_app from different locations
+load_dotenv()
+
+# Create Flask app
+app = Flask(__name__)
+
+# Configure app
+app.config.update(
+    SECRET_KEY=os.environ.get("FLASK_SECRET_KEY", "dev-secret-key"),
+    LEAGUE_ID=os.environ.get("LEAGUE_ID"),
+    ESPN_SWID=os.environ.get("ESPN_SWID"),
+    ESPN_S2=os.environ.get("ESPN_S2"),
+    LAST_SEASON=int(os.environ.get("LAST_SEASON", "2024")),
+)
+
+# Import and register blueprint
 try:
-    from app import create_app
+    from app.routes import bp as main_bp
+    app.register_blueprint(main_bp)
 except ImportError:
-    try:
-        # Try importing from the nested app directory
-        sys.path.insert(0, "/app")
-        from app import create_app
-    except ImportError:
-        # Try importing directly from the app module
-        import app
-        create_app = app.create_app
+    # Fallback: create a simple route
+    @app.route("/")
+    def index():
+        return "Keeper App - Import Error. Check logs."
 
-app = create_app()
+if __name__ == "__main__":
+    app.run()
