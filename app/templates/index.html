@@ -127,7 +127,7 @@
         <div class="k-card p-3 mb-4">
           <div class="text-center">
             <div class="alert alert-info mb-0" id="deadlineAlert">
-              <h6 class="mb-2">⏰ Keeper Deadline</h6>
+              <h6 class="mb-2">Keeper Deadline</h6>
               <div id="countdown" class="h5 mb-2"></div>
               <small class="text-muted">Deadline: <span id="deadlineDate"></span></small>
             </div>
@@ -583,7 +583,7 @@
       });
 
       // Keeper Deadline Countdown
-      const deadlineDate = new Date('2025-08-15T23:59:59'); // Set your deadline here
+      const deadlineDate = new Date('2025-09-01T23:59:59'); // Set your deadline here
       const deadlineDateEl = document.getElementById('deadlineDate');
       const countdownEl = document.getElementById('countdown');
       const deadlineAlertEl = document.getElementById('deadlineAlert');
@@ -597,7 +597,7 @@
           countdownEl.innerHTML = '<span class="text-danger">DEADLINE PASSED</span>';
           deadlineAlertEl.className = 'alert alert-danger mb-0';
           emailKeepersBtn.disabled = true;
-          emailKeepersBtn.innerHTML = '📧 Email Commissioner <span class="badge bg-danger">Deadline Passed</span>';
+          emailKeepersBtn.innerHTML = 'Email Commissioner <span class="badge bg-danger">Deadline Passed</span>';
           return;
         }
         
