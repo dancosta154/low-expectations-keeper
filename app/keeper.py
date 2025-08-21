@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
 
 # League teams shown in the dropdown
 TEAMS = [
@@ -36,6 +36,11 @@ class Verdict:
     keeper_message: str
     keeper_bucket: Optional[str]
 
+@dataclass
+class KeeperSelection:
+    team_key: str
+    keepers: List[Dict]  # List of {player_id, name, bucket, draft_round, cost_round}
+
 def check_final_roster(rec: PlayerRec, selected_team_key: str) -> Tuple[bool, str]:
     if rec.final_team_id is None:
         return False, "Final roster team mapping unknown for this league. Please map ESPN team IDs to your team keys in config/team_map.py."
@@ -63,3 +68,49 @@ def keeper_verdict(rec: PlayerRec) -> Tuple[bool, str, Optional[str]]:
     if 11 <= rd <= 16:
         return True, f"Eligible as a Rounds 11–16 keeper (original round {rd}).", "11-16"
     return False, f"Ineligible: draft round {rd} is outside keeper window (1–16).", None
+
+def can_add_to_keepers(rec: PlayerRec, current_selection: KeeperSelection) -> Tuple[bool, str, Optional[str]]:
+    """
+    Check if a player can be added to the keeper selection based on current limits.
+    Returns (can_add, message, bucket)
+    """
+    # First check basic eligibility
+    elig, msg, bucket = keeper_verdict(rec)
+    if not elig:
+        return False, msg, None
+    
+    # Check if already selected
+    for keeper in current_selection.keepers:
+        if keeper["player_id"] == rec.player_id:
+            return False, "Player already selected as keeper.", None
+    
+    # Check bucket limits
+    bucket_counts = {"1-10": 0, "11-16": 0, "waiver": 0}
+    for keeper in current_selection.keepers:
+        bucket_counts[keeper["bucket"]] += 1
+    
+    if bucket == "1-10" and bucket_counts["1-10"] >= 1:
+        return False, "Already have 1 keeper from rounds 1-10.", None
+    elif bucket == "11-16" and bucket_counts["11-16"] >= 1:
+        return False, "Already have 1 keeper from rounds 11-16.", None
+    elif bucket == "waiver" and bucket_counts["waiver"] >= 1:
+        return False, "Already have 1 waiver wire keeper.", None
+    
+    # Check total limit
+    if len(current_selection.keepers) >= 3:
+        return False, "Maximum 3 keepers allowed.", None
+    
+    return True, f"Can add as {bucket} keeper.", bucket
+
+def calculate_keeper_cost(rec: PlayerRec, current_selection: KeeperSelection) -> int:
+    """
+    Calculate the draft round cost for a keeper.
+    """
+    if rec.originally_undrafted:
+        # Check if any other keeper uses round 9
+        for keeper in current_selection.keepers:
+            if keeper["cost_round"] == 9:
+                return 10  # Waiver keeper becomes 10th if 9th is used
+        return 9  # Default waiver keeper cost
+    else:
+        return rec.draft_round or 16  # Use original draft round

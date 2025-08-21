@@ -7,7 +7,7 @@ from .services.espn import (
     dropdown_teams,
     fetch_league_blob,
 )  # <-- added fetch_league_blob
-from .keeper import check_final_roster, keeper_verdict, TEAMS
+from .keeper import check_final_roster, keeper_verdict, TEAMS, can_add_to_keepers, calculate_keeper_cost, KeeperSelection
 import email
 from email import parser
 
@@ -142,3 +142,75 @@ def api_check():
             "undrafted": rec.originally_undrafted,
         }
     )
+
+
+@bp.post("/api/check_keeper_selection")
+def api_check_keeper_selection():
+    """
+    Check if a player can be added to keeper selection based on current limits.
+    """
+    data = request.get_json(force=True)
+    name = (data.get("name") or "").strip().lower()
+    team_key = (data.get("team_id") or "").strip()
+    current_keepers = data.get("current_keepers", [])
+
+    if not name or not team_key:
+        return jsonify({"error": "Missing player name or team selection."}), 400
+
+    try:
+        idx = player_index_by_name(current_app.config)
+    except Exception as e:
+        return jsonify({"error": f"Failed to load ESPN data: {e}"}), 500
+
+    rec = idx.get(name)
+    if not rec:
+        return jsonify({"error": "Player not found."}), 404
+
+    # Create KeeperSelection object from current keepers
+    selection = KeeperSelection(team_key=team_key, keepers=current_keepers)
+    
+    # Check if can be added
+    can_add, message, bucket = can_add_to_keepers(rec, selection)
+    
+    if can_add:
+        cost_round = calculate_keeper_cost(rec, selection)
+        return jsonify({
+            "can_add": True,
+            "message": message,
+            "bucket": bucket,
+            "cost_round": cost_round,
+            "player_info": {
+                "id": rec.player_id,
+                "name": rec.name,
+                "draft_round": rec.draft_round,
+                "undrafted": rec.originally_undrafted
+            }
+        })
+    else:
+        return jsonify({
+            "can_add": False,
+            "message": message,
+            "bucket": None
+        })
+
+
+@bp.get("/api/keeper_limits")
+def api_keeper_limits():
+    """
+    Get current keeper selection limits and rules.
+    """
+    return jsonify({
+        "max_keepers": 3,
+        "limits": {
+            "1-10": 1,
+            "11-16": 1,
+            "waiver": 1
+        },
+        "rules": [
+            "Maximum 3 keepers total",
+            "1 keeper from rounds 1-10",
+            "1 keeper from rounds 11-16", 
+            "1 waiver wire keeper (undrafted players)",
+            "Players kept last year cannot be kept again"
+        ]
+    })
