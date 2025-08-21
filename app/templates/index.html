@@ -199,6 +199,9 @@
                       </button>
                       <button class="btn btn-sm btn-success" id="email-keepers" disabled>
                         📧 Email Commissioner
+                        {% if commissioner_email %}
+                        <span class="badge bg-light text-dark ms-1">✓</span>
+                        {% endif %}
                       </button>
                     </div>
                   </div>
@@ -338,7 +341,16 @@
         body += `\nTotal Keepers: ${selectedKeepersList.length}/3\n\n`;
         body += `Thanks!\n`;
         
-        const mailtoLink = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+        // Get commissioner email from environment variable
+        const commissionerEmail = '{{ commissioner_email }}';
+        console.log('Commissioner email:', commissionerEmail); // Debug log
+        
+        const mailtoLink = commissionerEmail && commissionerEmail.trim() ? 
+          `mailto:${commissionerEmail.trim()}?subject=${subject}&body=${encodeURIComponent(body)}` :
+          `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+        
+        console.log('Mailto link:', mailtoLink); // Debug log
+        
         window.open(mailtoLink);
       }
 
