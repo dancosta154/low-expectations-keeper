@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Keeper Eligibility Checker • Low Expectations League</title>
+    <title>Low Expectations League • Keeper Selection Tracker</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -12,25 +12,29 @@
     <link rel="stylesheet" href="/static/styles.css" />
     <style>
       :root {
-        --bg: #0b1020;
-        --card: #111831;
+        --bg: #0a0f1a;
+        --card: #1a2332;
         --muted: #94a3b8;
-        --border: #22315d;
-        --accent: #6ea8fe;
-        --ok: #2ecc71;
-        --bad: #ff6b6b;
+        --border: #2d3748;
+        --accent: #ff6b35;
+        --ok: #48bb78;
+        --bad: #f56565;
+        --football: #8b4513;
+        --grass: #2d5016;
       }
       body {
-        background: var(--bg);
+        background: linear-gradient(135deg, var(--bg) 0%, var(--grass) 100%);
         color: #e6e8ef;
+        min-height: 100vh;
       }
       .hero {
         max-width: 980px;
       }
       .k-card {
         background: var(--card);
-        border: 1px solid var(--border);
+        border: 2px solid var(--football);
         border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       }
       .step {
         font-size: 0.85rem;
@@ -85,23 +89,37 @@
         color: #bcd1ff;
       }
       .btn-primary {
-        background: #3b82f6;
-        border-color: #3b82f6;
+        background: var(--accent);
+        border-color: var(--accent);
+        font-weight: 600;
       }
       .btn-primary:hover {
-        background: #2563eb;
-        border-color: #2563eb;
+        background: #e55a2b;
+        border-color: #e55a2b;
+      }
+      .btn-outline-primary {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .btn-outline-primary:hover {
+        background: var(--accent);
+        border-color: var(--accent);
       }
     </style>
   </head>
   <body>
     <div class="container py-5">
       <div class="mx-auto hero">
-        <header class="mb-4">
-          <h1 class="h3 mb-1">Keeper Eligibility Checker</h1>
+        <header class="mb-4 text-center">
+          <div class="mb-3">
+            <span style="font-size: 2rem; color: var(--accent);">🏈</span>
+          </div>
+          <h1 class="h2 mb-2" style="color: var(--accent); font-weight: 700;">
+            LOW EXPECTATIONS LEAGUE
+          </h1>
+          <h2 class="h4 mb-2">Keeper Selection Tracker</h2>
           <div class="small-muted">
-            Low Expectations League • Using ESPN data (last season: {{
-            last_season }})
+            ESPN Fantasy Football • {{ last_season }} Season
           </div>
         </header>
 
@@ -175,9 +193,14 @@
                   <hr class="divider" />
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="mb-0">Keeper Selection</h6>
-                    <button class="btn btn-sm btn-outline-primary" id="add-keeper" disabled>
-                      Add to Keepers
-                    </button>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-outline-primary" id="add-keeper" disabled>
+                        Add to Keepers
+                      </button>
+                      <button class="btn btn-sm btn-success" id="email-keepers" disabled>
+                        📧 Email Commissioner
+                      </button>
+                    </div>
                   </div>
                   
                   <div id="keeper-limits" class="small-muted mb-3">
@@ -203,8 +226,12 @@
           </div>
         </div>
 
-        <footer class="text-center small-muted">
-          © 2025 Low Expectations League
+        <footer class="text-center small-muted mt-5">
+          <div class="mb-2">
+            <span style="font-size: 1.5rem;">🏈</span>
+          </div>
+          <div>© 2025 Low Expectations League</div>
+          <div class="mt-1">Fantasy Football Excellence Since Forever</div>
         </footer>
       </div>
     </div>
@@ -229,6 +256,7 @@
       // Keeper selection elements
       const keeperSelection = document.getElementById("keeper-selection");
       const addKeeperBtn = document.getElementById("add-keeper");
+      const emailKeepersBtn = document.getElementById("email-keepers");
       const selectedKeepers = document.getElementById("selected-keepers");
       const noKeepers = document.getElementById("no-keepers");
       const limit1_10 = document.getElementById("limit-1-10");
@@ -270,9 +298,11 @@
         if (selectedKeepersList.length === 0) {
           selectedKeepers.classList.add("d-none");
           noKeepers.classList.remove("d-none");
+          emailKeepersBtn.disabled = true;
         } else {
           selectedKeepers.classList.remove("d-none");
           noKeepers.classList.add("d-none");
+          emailKeepersBtn.disabled = false;
           
           selectedKeepers.innerHTML = selectedKeepersList.map(keeper => `
             <div class="item">
@@ -287,6 +317,29 @@
           `).join("");
         }
         updateKeeperLimits();
+      }
+
+      function emailKeepers() {
+        if (selectedKeepersList.length === 0) return;
+
+        const teamName = teamSel.options[teamSel.selectedIndex].text;
+        const subject = encodeURIComponent(`Low Expectations League - Keeper Selections - ${teamName}`);
+        
+        let body = `Hi Commissioner,\n\n`;
+        body += `Here are my keeper selections for the ${new Date().getFullYear()} season:\n\n`;
+        body += `Team: ${teamName}\n\n`;
+        
+        selectedKeepersList.forEach((keeper, index) => {
+          const bucketText = keeper.bucket === "1-10" ? "Rounds 1-10" : 
+                           keeper.bucket === "11-16" ? "Rounds 11-16" : "Waiver Wire";
+          body += `${index + 1}. ${keeper.name} (${bucketText} - Round ${keeper.cost_round})\n`;
+        });
+        
+        body += `\nTotal Keepers: ${selectedKeepersList.length}/3\n\n`;
+        body += `Thanks!\n`;
+        
+        const mailtoLink = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+        window.open(mailtoLink);
       }
 
       function removeKeeper(playerId) {
@@ -486,6 +539,10 @@
         } catch (err) {
           console.error("Failed to add keeper:", err);
         }
+      });
+
+      emailKeepersBtn.addEventListener("click", () => {
+        emailKeepers();
       });
 
       resetBtn.addEventListener("click", () => {
