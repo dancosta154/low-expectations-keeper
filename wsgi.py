@@ -12,8 +12,8 @@ load_dotenv()
 
 # Create Flask app with correct template and static directories
 app = Flask(__name__, 
-           template_folder="app/templates",
-           static_folder="app/static")
+           template_folder='app/templates',
+           static_folder='app/static')
 
 # Configure app
 app.config.update(
@@ -22,6 +22,7 @@ app.config.update(
     ESPN_SWID=os.environ.get("ESPN_SWID"),
     ESPN_S2=os.environ.get("ESPN_S2"),
     LAST_SEASON=int(os.environ.get("LAST_SEASON", "2024")),
+    COMMISSIONER_EMAIL=os.environ.get("COMMISSIONER_EMAIL", ""),
 )
 
 # Import and register blueprint

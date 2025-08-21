@@ -24,7 +24,10 @@ def index():
     except Exception:
         teams = TEAMS
     return render_template(
-        "index.html", teams=teams, last_season=current_app.config["LAST_SEASON"]
+        "index.html", 
+        teams=teams, 
+        last_season=current_app.config["LAST_SEASON"],
+        commissioner_email=current_app.config.get("COMMISSIONER_EMAIL", "")
     )
 
 
