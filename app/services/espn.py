@@ -80,9 +80,10 @@ def _best_final_period(cfg, season: int, hint: int | None) -> int:
 
 
 def fetch_league_blob(cfg) -> Dict:
-    # For keeper eligibility, we need data from the previous season (2023)
-    # since we're checking eligibility for the upcoming season (2024)
-    season = cfg["LAST_SEASON"] - 1  # Use previous season for all data
+    # For keeper eligibility, we need data from the season that just ended
+    # If we're checking eligibility for 2025 season, we need 2024 data
+    # So LAST_SEASON should be the season we want data from
+    season = cfg["LAST_SEASON"]  # Use the specified season for all data
 
     settings = _get_json(cfg, {"view": "mSettings"}, season)
     final_sp = (settings.get("status") or {}).get("finalScoringPeriod")
@@ -153,8 +154,8 @@ def player_index_by_name(cfg) -> Dict[str, PlayerRec]:
 
 def dropdown_teams(cfg) -> List[Dict[str, str]]:
     """Return dropdown items built from ESPN team names, mapped to your stable keys."""
-    # Use previous season data for team names too
-    season = cfg["LAST_SEASON"] - 1
+    # Use the same season data for team names
+    season = cfg["LAST_SEASON"]
     teams_meta = _get_json(cfg, {"view": "mTeam"}, season)
     items = []
     for t in teams_meta.get("teams") or []:
