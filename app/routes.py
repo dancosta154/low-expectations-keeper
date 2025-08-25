@@ -206,13 +206,13 @@ def api_keeper_limits():
         "max_keepers": 3,
         "limits": {
             "1-10": 1,
-            "11-16": 1,
+            "11-18": 1,
             "waiver": 1
         },
         "rules": [
             "Maximum 3 keepers total",
             "1 keeper from rounds 1-10",
-            "1 keeper from rounds 11-16", 
+            "1 keeper from rounds 11-18", 
             "1 waiver wire keeper (undrafted players)",
             "Players kept last year cannot be kept again"
         ]
