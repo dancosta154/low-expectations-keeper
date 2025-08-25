@@ -220,7 +220,7 @@
                   <div id="keeper-limits" class="small-muted mb-3">
                     <div class="d-flex gap-3">
                       <span>1-10: <span id="limit-1-10">0/1</span></span>
-                      <span>11-16: <span id="limit-11-16">0/1</span></span>
+                      <span>11-18: <span id="limit-11-18">0/1</span></span>
                       <span>Waiver: <span id="limit-waiver">0/1</span></span>
                     </div>
                   </div>
@@ -274,7 +274,7 @@
       const selectedKeepers = document.getElementById("selected-keepers");
       const noKeepers = document.getElementById("no-keepers");
       const limit1_10 = document.getElementById("limit-1-10");
-      const limit11_16 = document.getElementById("limit-11-16");
+      const limit11_18 = document.getElementById("limit-11-18");
       const limitWaiver = document.getElementById("limit-waiver");
 
       let currentRoster = []; // [{id,name,draft_round,undrafted}]
@@ -298,13 +298,13 @@
       }
 
       function updateKeeperLimits() {
-        const counts = { "1-10": 0, "11-16": 0, "waiver": 0 };
+        const counts = { "1-10": 0, "11-18": 0, "waiver": 0 };
         selectedKeepersList.forEach(keeper => {
           counts[keeper.bucket]++;
         });
         
         limit1_10.textContent = `${counts["1-10"]}/1`;
-        limit11_16.textContent = `${counts["11-16"]}/1`;
+        limit11_18.textContent = `${counts["11-18"]}/1`;
         limitWaiver.textContent = `${counts["waiver"]}/1`;
       }
 
@@ -344,8 +344,8 @@
         body += `Team: ${teamName}\n\n`;
         
         selectedKeepersList.forEach((keeper, index) => {
-          const bucketText = keeper.bucket === "1-10" ? "Rounds 1-10" : 
-                           keeper.bucket === "11-16" ? "Rounds 11-16" : "Waiver Wire";
+          const bucketText =         keeper.bucket === "1-10" ? "Rounds 1-10" : 
+        keeper.bucket === "11-18" ? "Rounds 11-18" : "Waiver Wire";
           body += `${index + 1}. ${keeper.name} (${bucketText} - Round ${keeper.cost_round})\n`;
         });
         
