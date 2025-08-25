@@ -65,10 +65,10 @@ def keeper_verdict(rec: PlayerRec) -> Tuple[bool, str, Optional[str]]:
     rd = rec.draft_round
     if 1 <= rd <= 10:
         return True, f"Eligible as a Rounds 1–10 keeper (original round {rd}).", "1-10"
-    if 11 <= rd <= 16:
-        return True, f"Eligible as a Rounds 11–16 keeper (original round {rd}).", "11-16"
-    # Players from round 17+ are eligible but don't fit into the bucket system
-    return True, f"Eligible as a keeper (original round {rd}), but doesn't fit bucket limits (1-10, 11-16, waiver).", None
+    if 11 <= rd <= 18:
+        return True, f"Eligible as a Rounds 11–18 keeper (original round {rd}).", "11-18"
+    # Players from round 19+ are eligible but don't fit into the bucket system
+    return True, f"Eligible as a keeper (original round {rd}), but doesn't fit bucket limits (1-10, 11-18, waiver).", None
 
 def can_add_to_keepers(rec: PlayerRec, current_selection: KeeperSelection) -> Tuple[bool, str, Optional[str]]:
     """
@@ -86,14 +86,14 @@ def can_add_to_keepers(rec: PlayerRec, current_selection: KeeperSelection) -> Tu
             return False, "Player already selected as keeper.", None
     
     # Check bucket limits
-    bucket_counts = {"1-10": 0, "11-16": 0, "waiver": 0}
+    bucket_counts = {"1-10": 0, "11-18": 0, "waiver": 0}
     for keeper in current_selection.keepers:
         bucket_counts[keeper["bucket"]] += 1
     
     if bucket == "1-10" and bucket_counts["1-10"] >= 1:
         return False, "Already have 1 keeper from rounds 1-10.", None
-    elif bucket == "11-16" and bucket_counts["11-16"] >= 1:
-        return False, "Already have 1 keeper from rounds 11-16.", None
+    elif bucket == "11-18" and bucket_counts["11-18"] >= 1:
+        return False, "Already have 1 keeper from rounds 11-18.", None
     elif bucket == "waiver" and bucket_counts["waiver"] >= 1:
         return False, "Already have 1 waiver wire keeper.", None
     
