@@ -67,7 +67,8 @@ def keeper_verdict(rec: PlayerRec) -> Tuple[bool, str, Optional[str]]:
         return True, f"Eligible as a Rounds 1–10 keeper (original round {rd}).", "1-10"
     if 11 <= rd <= 16:
         return True, f"Eligible as a Rounds 11–16 keeper (original round {rd}).", "11-16"
-    return False, f"Ineligible: draft round {rd} is outside keeper window (1–16).", None
+    # Players from round 17+ are eligible but don't fit into the bucket system
+    return True, f"Eligible as a keeper (original round {rd}), but doesn't fit bucket limits (1-10, 11-16, waiver).", None
 
 def can_add_to_keepers(rec: PlayerRec, current_selection: KeeperSelection) -> Tuple[bool, str, Optional[str]]:
     """
