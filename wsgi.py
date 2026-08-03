@@ -22,7 +22,7 @@ app.config.update(
     ESPN_SWID=os.environ.get("ESPN_SWID"),
     ESPN_S2=os.environ.get("ESPN_S2"),
     LAST_SEASON=int(os.environ.get("LAST_SEASON", "2024")),
-    COMMISSIONER_EMAIL=os.environ.get("COMMISSIONER_EMAIL", ""),
+    COMMISSIONER_EMAIL=os.environ.get("COMMISSIONER_EMAIL", "dcosta154@gmail.com"),
 )
 
 # Import and register blueprint

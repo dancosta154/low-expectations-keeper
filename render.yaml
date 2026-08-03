@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: low-expectations-keeper
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --preload --workers=1 --threads=4 --timeout=60 --bind=0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: LAST_SEASON
+        value: "2025"
+      - key: COMMISSIONER_EMAIL
+        value: dcosta154@gmail.com
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: LEAGUE_ID
+        sync: false
+      - key: ESPN_SWID
+        sync: false
+      - key: ESPN_S2
+        sync: false

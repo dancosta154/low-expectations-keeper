@@ -13,29 +13,22 @@ TEAM_ID_MAP = {
     10: "mahoms",  # Justin Time (Connor Flaherty) [was Me And My Mahomies]
 }
 
-# Players who were kept in 2023 and cannot be kept again in 2024
+# Players who were kept in 2025 and cannot be kept again in 2026
 # (they've already been kept for 1 season, max is 2 seasons total)
 SEASONS_KEPT_OVERRIDES = {
-    2976212: 1,  # Stefon Diggs
-    3918298: 1,  # Josh Allen
-    3116406: 1,  # Tyreek Hill
-    4241389: 1,  # CeeDee Lamb
-    4429795: 1,  # Jahmyr Gibbs
-    4569618: 1,  # Garrett Wilson
-    4239996: 1,  # Travis Etienne Jr.
-    3054850: 1,  # Alvin Kamara
-    4427366: 1,  # Breece Hall
-    3045147: 1,  # James Conner
-    4430737: 1,  # Kyren Williams
-    4036378: 1,  # Jordan Love
-    4426515: 1,  # Puka Nacua
-    4430027: 1,  # Sam LaPorta
-    4035676: 1,  # Zack Moss (found as "zack moss")
-    4430878: 1,  # Jaxon Smith-Njigba
-    4258173: 1,  # Nico Collins
-    4428557: 1,  # Tyjae Spears
-    4429084: 1,  # Anthony Richardson
-    4429160: 1,  # De'Von Achane
-    4428331: 1,  # Rashee Rice
-    4569987: 1,  # Jaylen Warren
+    4430807: 1,  # Bijan Robinson (rd 1)
+    4362628: 1,  # Ja'Marr Chase (rd 1)
+    4595348: 1,  # Malik Nabers (rd 4)
+    4362238: 1,  # Chase Brown (rd 8)
+    4683062: 1,  # Xavier Worthy (rd 8)
+    4432773: 1,  # Brian Thomas Jr. (rd 10)
+    4612826: 1,  # Ladd McConkey (rd 10)
+    4596448: 1,  # Bucky Irving (rd 11)
+    4426348: 1,  # Jayden Daniels (rd 11)
+    4426388: 1,  # Jameson Williams (rd 11)
+    4426385: 1,  # Zach Charbonnet (rd 11)
+    4036133: 1,  # T.J. Hockenson (rd 12)
+    4038941: 1,  # Justin Herbert (rd 13)
+    4373678: 1,  # Khalil Shakir (rd 13)
+    4032473: 1,  # Rashid Shaheed (rd 17)
 }

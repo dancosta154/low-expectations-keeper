@@ -140,7 +140,7 @@
               <div class="step mb-2">Step 1 — Select your team</div>
               <select class="form-select" id="team" required>
                 <option value="" selected disabled>
-                  Choose your 2024 team…
+                  Choose your 2025 team…
                 </option>
                 {% for t in teams %}
                 <option value="{{ t.id }}">{{ t.name }}</option>
@@ -195,7 +195,7 @@
 
                 <div class="alert alert-info mt-3 small" role="alert">
                   Team limits still apply: one keeper from Rounds 1–10, one from
-                  Rounds 11–16, and one Waiver Wire keeper (undrafted → 9th;
+                  Rounds 11–18, and one Waiver Wire keeper (undrafted → 9th;
                   becomes 10th if your other keeper uses a 9th).
                 </div>
 
@@ -344,8 +344,8 @@
         body += `Team: ${teamName}\n\n`;
         
         selectedKeepersList.forEach((keeper, index) => {
-          const bucketText =         keeper.bucket === "1-10" ? "Rounds 1-10" : 
-        keeper.bucket === "11-18" ? "Rounds 11-18" : "Waiver Wire";
+          const bucketText = keeper.bucket === "1-10" ? "Rounds 1-10" : 
+                           keeper.bucket === "11-18" ? "Rounds 11-18" : "Waiver Wire";
           body += `${index + 1}. ${keeper.name} (${bucketText} - Round ${keeper.cost_round})\n`;
         });
         
@@ -583,8 +583,8 @@
       });
 
       // Keeper Deadline Countdown
-      // Set deadline to Thursday, August 28th, 2025 at noon EST
-      const deadlineDate = new Date('2025-08-28T17:00:00Z'); // 12:00 PM EST = 5:00 PM UTC
+      // Set deadline to Friday, September 4th, 2026 at noon EST
+      const deadlineDate = new Date('2026-09-04T16:00:00Z'); // 12:00 PM EDT = 4:00 PM UTC
       const deadlineDateEl = document.getElementById('deadlineDate');
       const countdownEl = document.getElementById('countdown');
       const deadlineAlertEl = document.getElementById('deadlineAlert');
